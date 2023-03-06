@@ -1,8 +1,0 @@
-//
-// Created by hazyparker on 23-3-5.
-//
-
-#ifndef FLIGHT_CONTROLLER_OFFBOARD_NODE_H
-#define FLIGHT_CONTROLLER_OFFBOARD_NODE_H
-
-#endif //FLIGHT_CONTROLLER_OFFBOARD_NODE_H
