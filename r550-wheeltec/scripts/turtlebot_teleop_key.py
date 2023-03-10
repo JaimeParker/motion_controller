@@ -128,7 +128,7 @@ if __name__=="__main__":
             
             #判断键值是否在移动/转向方向键值内
             if key in moveBindings.keys():
-                x  = moveBindings[key][0]
+                x  = moveBindings[key][0]  # -1, 1, 0
                 th = moveBindings[key][1]
                 count = 0
 
@@ -188,11 +188,19 @@ if __name__=="__main__":
             twist = Twist() #创建ROS速度话题变量
             #根据是否全向移动模式，给速度话题变量赋值
             if Omni==0:
-                twist.linear.x  = control_speed; twist.linear.y = 0;  twist.linear.z = 0
-                twist.angular.x = 0;             twist.angular.y = 0; twist.angular.z = control_turn
+                twist.linear.x  = control_speed
+                twist.linear.y = 0
+                twist.linear.z = 0
+                twist.angular.x = 0         
+                twist.angular.y = 0
+                twist.angular.z = control_turn
             else:
-                twist.linear.x  = control_speed; twist.linear.y = control_HorizonMove; twist.linear.z = 0
-                twist.angular.x = 0;             twist.angular.y = 0;                  twist.angular.z = 0
+                twist.linear.x  = control_speed
+                twist.linear.y = control_HorizonMove
+                twist.linear.z = 0
+                twist.angular.x = 0         
+                twist.angular.y = 0              
+                twist.angular.z = 0
 
             pub.publish(twist) #ROS发布速度话题
 
