@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 # coding=utf-8
 
+import select
+import sys
+import termios
+import tty
+
 import rospy
 from geometry_msgs.msg import Twist
-import sys, select, termios, tty
-
 
 # define default speed
 v_linear_x = 0
@@ -28,11 +31,11 @@ def getKey():
 
 # show info of speed and angular
 def vel_info(speed, turn, angular):
-    return "currently:\tlinear x %s\tlinear y %s\t angular z %s" % (speed, turn, angular)
+    return "currently:\t linear x %s\t linear y %s\t angular z %s" % (speed, turn, angular)
 
 
 # main
-if __name__=="__main__":
+if __name__ == "__main__":
     # get keyboard info
     settings = termios.tcgetattr(sys.stdin)
 
@@ -46,7 +49,7 @@ if __name__=="__main__":
         print("keyboard control connected...")
         print(vel_info(v_linear_x, v_linear_y, v_angular))
 
-        while(1):
+        while 1:
             key = getKey()
 
             if key == 'w':
@@ -84,10 +87,14 @@ if __name__=="__main__":
     # set all parameters to 0 when the program is finished
     finally:
         twist = Twist()
-        twist.linear.x = 0;  twist.linear.y = 0;  twist.linear.z = 0
-        twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0
+        twist.linear.x = 0
+        twist.linear.y = 0
+        twist.linear.z = 0
+        twist.angular.x = 0
+        twist.angular.y = 0
+        twist.angular.z = 0
         publisher.publish(twist)
         print("finish program")
 
-    #程序结束前设置终端相关属性
+    # system out
     termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
