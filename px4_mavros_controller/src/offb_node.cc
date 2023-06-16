@@ -27,7 +27,7 @@ int main(int argc, char **argv)
     ros::NodeHandle nh;
 
     // define subscriber and publisher
-    // define service client
+    // define a service client
     ros::Subscriber state_sub = nh.subscribe<mavros_msgs::State>
             ("mavros/state", 10, state_cb);
     ros::Publisher local_pos_pub = nh.advertise<geometry_msgs::PoseStamped>
@@ -37,12 +37,13 @@ int main(int argc, char **argv)
     ros::ServiceClient set_mode_client = nh.serviceClient<mavros_msgs::SetMode>
             ("mavros/set_mode");
 
-    //the setpoint publishing rate MUST be faster than 2Hz
+    //the set-point publishing rate MUST be faster than 2Hz
     ros::Rate rate(20.0);
 
     // wait for FCU connection
     while(ros::ok() && !current_state.connected){
-        ROS_INFO("fcu connecting...");  // mind the fcu_url in launch file and gazebo_setup.bash in ~/.bashrc
+        ROS_INFO("fcu connecting...");
+        // mind the fcu_url in launch file and gazebo_setup.bash in ~/.bashrc
         ros::spinOnce();
         rate.sleep();
     }
