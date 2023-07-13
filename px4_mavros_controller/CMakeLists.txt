@@ -18,8 +18,6 @@ find_package(catkin REQUIRED COMPONENTS
         mavros_msgs
         tf
         nav_msgs
-        octomap_server
-        octomap_msgs
         sensor_msgs
 )
 
@@ -156,8 +154,8 @@ target_link_libraries(T265FrameTransfer ${catkin_LIBRARIES} ${OpenCV_LIBS})
 add_executable(T265OdomTransfer src/T265OdomTransfer.cc)
 target_link_libraries(T265OdomTransfer ${catkin_LIBRARIES})
 
-add_executable(D435iPCL2Octomap src/D435iPCL2Octomap.cc)
-target_link_libraries(D435iPCL2Octomap ${catkin_LIBRARIES})
+#add_executable(D435iPCL2Octomap src/D435iPCL2Octomap.cc)
+#target_link_libraries(D435iPCL2Octomap ${catkin_LIBRARIES})
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
