@@ -1,0 +1,18 @@
+<launch>
+
+    <!-- Camera odom topic, depend on camera -->
+    <!-- /camera/odom/sample for a single T265 camera
+         /t265/odom/sample for D400 and T265 cameras (rs_d400_and_t265.launch) -->
+    <param name="camera_odom_topic" value="/t265/odom/sample" />
+
+
+    <arg name="target_frame_id"   default="/t265_odom_frame" />
+    <param name="target_frame_id"   value="$(arg target_frame_id)" />
+
+    <arg name="source_frame_id"   default="/t265_link" />
+    <param name="source_frame_id"   value="$(arg source_frame_id)" />
+
+    <node pkg="px4_mavros_controller" type="CameraOdomTransfer" name="CameraOdomTransfer" output="screen" >
+
+    </node>
+</launch>

@@ -75,6 +75,8 @@ int main(int argc, char **argv)
     arm_cmd.request.value = true;
 
     ros::Time last_request = ros::Time::now();
+    // flag variable
+    // Necessary for real test, enabling to switch to manual control
     bool if_offboard = false;
     bool if_armed = false;
 
@@ -122,7 +124,7 @@ int main(int argc, char **argv)
         rate.sleep();
     }
 
-    // waypoint
+    // waypointh
     ROS_INFO("Moving to target position...");
     pose.pose.position.x = 0.5;
     pose.pose.position.y = 0;

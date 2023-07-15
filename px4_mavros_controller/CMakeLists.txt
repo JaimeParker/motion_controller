@@ -6,6 +6,7 @@ project(px4_mavros_controller)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
+set(CMAKE_PREFIX_PATH "/opt/ros/noetic" ${CMAKE_PREFIX_PATH})
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -151,8 +152,8 @@ target_link_libraries(offb_node ${catkin_LIBRARIES})
 add_executable(T265FrameTransfer src/T265Vision2Mavros.cc)
 target_link_libraries(T265FrameTransfer ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
-add_executable(T265OdomTransfer src/T265OdomTransfer.cc)
-target_link_libraries(T265OdomTransfer ${catkin_LIBRARIES})
+add_executable(CameraOdomTransfer src/CameraOdomTransfer.cc)
+target_link_libraries(CameraOdomTransfer ${catkin_LIBRARIES})
 
 #add_executable(D435iPCL2Octomap src/D435iPCL2Octomap.cc)
 #target_link_libraries(D435iPCL2Octomap ${catkin_LIBRARIES})
