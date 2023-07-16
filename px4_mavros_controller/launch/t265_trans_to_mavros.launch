@@ -6,11 +6,10 @@
     <param name="camera_odom_topic" value="/t265/odom/sample" />
 
 
-    <arg name="target_frame_id"   default="/t265_odom_frame" />
-    <param name="target_frame_id"   value="$(arg target_frame_id)" />
+    <param name="vision_pose_topic" value="/mavros/vision_pose/pose" />
 
-    <arg name="source_frame_id"   default="/t265_link" />
-    <param name="source_frame_id"   value="$(arg source_frame_id)" />
+    <param name="target_frame_id"   value="/t265_odom_frame" />
+    <param name="source_frame_id"   value="$/t265_link" />
 
     <node pkg="px4_mavros_controller" type="CameraOdomTransfer" name="CameraOdomTransfer" output="screen" >
 

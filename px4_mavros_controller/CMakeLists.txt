@@ -152,8 +152,8 @@ target_link_libraries(offb_node ${catkin_LIBRARIES})
 add_executable(T265FrameTransfer src/T265Vision2Mavros.cc)
 target_link_libraries(T265FrameTransfer ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
-add_executable(CameraOdomTransfer src/CameraOdomTransfer.cc)
-target_link_libraries(CameraOdomTransfer ${catkin_LIBRARIES})
+add_executable(camera_odom_transfer src/CameraOdomTransfer.cc)
+target_link_libraries(camera_odom_transfer ${catkin_LIBRARIES})
 
 #add_executable(D435iPCL2Octomap src/D435iPCL2Octomap.cc)
 #target_link_libraries(D435iPCL2Octomap ${catkin_LIBRARIES})

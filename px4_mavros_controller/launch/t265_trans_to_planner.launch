@@ -1,0 +1,15 @@
+<launch>
+    <param name="camera_odom_topic" value="/t265/odom/sample" />
+
+    <param name="vision_pose_topic" value="/vision_pose" />
+
+    <arg name="target_frame_id"   default="/t265_odom_frame" />
+    <param name="target_frame_id"   value="$(arg target_frame_id)" />
+
+    <arg name="source_frame_id"   default="/t265_odom_frame" />
+    <param name="source_frame_id"   value="$(arg source_frame_id)" />
+
+    <node pkg="px4_mavros_controller" type="CameraOdomTransfer" name="CameraOdom2planner" output="screen" >
+
+    </node>
+</launch>
