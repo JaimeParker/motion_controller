@@ -135,8 +135,6 @@ include_directories(
 )
 
 ## Declare a C++ library
-add_library(${PROJECT_NAME}
-        src/offb_node.cc)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -154,6 +152,12 @@ target_link_libraries(T265FrameTransfer ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
 add_executable(camera_odom_transfer src/CameraOdomTransfer.cc)
 target_link_libraries(camera_odom_transfer ${catkin_LIBRARIES})
+
+add_executable(pose_transfer src/PoseTransfer.cc)
+target_link_libraries(pose_transfer ${catkin_LIBRARIES})
+
+add_executable(odom_transfer src/OdomTransfer.cc)
+target_link_libraries(odom_transfer ${catkin_LIBRARIES})
 
 #add_executable(D435iPCL2Octomap src/D435iPCL2Octomap.cc)
 #target_link_libraries(D435iPCL2Octomap ${catkin_LIBRARIES})
