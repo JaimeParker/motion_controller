@@ -33,24 +33,26 @@ int main(int argc, char **argv){
     std::string geo_target_frame_id;
 
     // get topic names
-    if (nodeHandle.getParam("pose_stamp_source_topic", geo_msg_source_topic)){
-        if (!geo_msg_source_topic.empty()) if_geo_msg_source = true;
+    nodeHandle.getParam("pose_stamp_source_topic", geo_msg_source_topic);
+    if (!geo_msg_source_topic.empty()){
+        if_geo_msg_source = true;
         ROS_INFO("Loaded parameter pose_stamp_source_topic: %s", geo_msg_source_topic.c_str());
     }else{
-        ROS_WARN("pose_stamp_source_topic is empty, PoseStamped topic transferring canceled.");
+        ROS_WARN("pose_stamp_source_topic is empty, PoseStamped topic transferring canceled");
     }
 
-    if (nodeHandle.getParam("pose_stamp_target_topic", geo_msg_target_topic)){
-        if (!geo_msg_target_topic.empty()) if_geo_msg_target = true;
+    nodeHandle.getParam("pose_stamp_target_topic", geo_msg_target_topic);
+    if (!geo_msg_target_topic.empty()){
+        if_geo_msg_target = true;
         ROS_INFO("Loaded parameter pose_stamp_target_topic: %s", geo_msg_target_topic.c_str());
     }else{
-        ROS_WARN("pose_stamp_target_topic is empty, PoseStamped topic transferring canceled.");
+        ROS_WARN("pose_stamp_target_topic is empty, PoseStamped topic transferring canceled");
     }
 
-    if (nodeHandle.getParam("geo_target_frame_id", geo_target_frame_id)){
-        // FIXME: why this will be proceed even though I don't provide param geo_target_frame_id
-        if (!geo_target_frame_id.empty()) if_geo_force_change_frame = true;
-        ROS_WARN("Loaded parameter geo_target_frame_id: %s, make sure you want to do this.",
+    nodeHandle.getParam("pose_stamp_target_frame_id", geo_target_frame_id);
+    if (!geo_target_frame_id.empty()){
+        if_geo_force_change_frame = true;
+        ROS_WARN("Loaded parameter frame_id of PoseStamped: %s, make sure you want to do this",
                  geo_target_frame_id.c_str());
     }else{
         ROS_INFO("No force converting of geo_frame_id, ready to start...");

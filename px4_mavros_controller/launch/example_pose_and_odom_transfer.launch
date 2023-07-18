@@ -1,0 +1,33 @@
+<!-- Example script of using pose_transfer and odom_transfer node -->
+<!-- To create PoseStamped or Odometry datatype topic, from existing ones -->
+<launch>
+
+    <!-- For pose_transfer node -->
+    <!-- existing topic name with datatype of geometry_msgs::PoseStamped -->
+    <param name="pose_stamp_source_topic" value="/mavros/local_position/pose"/>
+    <!-- name of the topic that you'd like to create, with the same datatype -->
+    <param name="pose_stamp_target_topic" value="/m_pose"/>
+    <!-- frame_id of the topic that you created -->
+    <param name="pose_stamp_target_frame_id" value="world"/>
+
+    <node
+        pkg="px4_mavros_controller" type="pose_transfer" name="pose_transfer" output="screen" >
+    </node>
+
+    <!-- For odom_transfer node -->
+    <!-- existing topic name with datatype of nav_msgs::Odometry -->
+    <param name="odometry_source_topic" value="/mavros/local_position/odom"/>
+    <!-- name of the topic that you'd like to create, with the same datatype -->
+    <param name="odometry_target_topic" value="/m_odom"/>
+    <!-- name of the topic that you'd like to created, with datatype of geometry_msgs::PoseStamped -->
+    <!-- include a conversion from nav_msgs::Odometry to geometry_msgs::PoseStamped -->
+    <param name="poseStamped_topic" value=""/>
+    <!-- frame_id of the topic that you created -->
+    <!-- this is necessary even though you just create a new Odometry topic -->
+    <param name="target_frame_id" value="world"/>
+
+    <node
+        pkg="px4_mavros_controller" type="odom_transfer" name="odom_transfer" output="screen" >
+    </node>
+
+</launch>

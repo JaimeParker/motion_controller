@@ -159,6 +159,9 @@ target_link_libraries(pose_transfer ${catkin_LIBRARIES})
 add_executable(odom_transfer src/OdomTransfer.cc)
 target_link_libraries(odom_transfer ${catkin_LIBRARIES})
 
+add_executable(depth_transfer src/DepthImageTransfer.cc)
+target_link_libraries(depth_transfer ${catkin_LIBRARIES})
+
 #add_executable(D435iPCL2Octomap src/D435iPCL2Octomap.cc)
 #target_link_libraries(D435iPCL2Octomap ${catkin_LIBRARIES})
 

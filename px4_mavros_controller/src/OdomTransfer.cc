@@ -14,6 +14,19 @@
 nav_msgs::Odometry odom_pose;
 geometry_msgs::PoseStamped geo_pose;
 
+void odom_pose_cb(const nav_msgs::Odometry::ConstPtr &msg){
+    odom_pose = *msg;
+
+    geo_pose.pose.position.x = odom_pose.pose.pose.position.x;
+    geo_pose.pose.position.y = odom_pose.pose.pose.position.y;
+    geo_pose.pose.position.z = odom_pose.pose.pose.position.z;
+
+    geo_pose.pose.orientation.x = odom_pose.pose.pose.orientation.x;
+    geo_pose.pose.orientation.y = odom_pose.pose.pose.orientation.y;
+    geo_pose.pose.orientation.z = odom_pose.pose.pose.orientation.z;
+    geo_pose.pose.orientation.w = odom_pose.pose.pose.orientation.w;
+}
+
 int main(int argc, char **argv){
     // ros init
     ros::init(argc, argv, "odom_transfer");
@@ -25,47 +38,112 @@ int main(int argc, char **argv){
     bool if_nav_force_change_frame = false;
     bool if_geo_msg_target = false;
 
-    std::string nav_msg_source_topic, nav_msg_target_topic, geo_msg_target_topic;
+    std::string nav_msg_source_topic, nav_msg_target_topic, poseStamped_topic;
     std::string target_frame_id;
 
     // get topic names
-    if (nodeHandle.getParam("odometry_source_topic", nav_msg_source_topic)){
-        if (!nav_msg_source_topic.empty()) if_nav_msg_source = true;
+    nodeHandle.getParam("odometry_source_topic", nav_msg_source_topic);
+    if (!nav_msg_source_topic.empty()){
+        if_nav_msg_source = true;
         ROS_INFO("Loaded parameter odometry_source_topic: %s", nav_msg_source_topic.c_str());
     }else{
         ROS_WARN("odometry_source_topic is empty, odometry topic transferring canceled.");
     }
 
-    if (nodeHandle.getParam("odometry_target_topic", nav_msg_target_topic)){
-        if (!nav_msg_target_topic.empty()) if_nav_msg_target = true;
+    nodeHandle.getParam("odometry_target_topic", nav_msg_target_topic);
+    if (!nav_msg_target_topic.empty()){
+        if_nav_msg_target = true;
         ROS_INFO("Loaded parameter odometry_target_topic: %s", nav_msg_target_topic.c_str());
     }else{
         ROS_WARN("odometry_target_topic is empty, odometry topic transferring canceled.");
     }
 
-    if (nodeHandle.getParam("odometry_target_topic", geo_msg_target_topic)){
-        if (!geo_msg_target_topic.empty()) if_geo_msg_target = true;
-        ROS_INFO("Loaded parameter pose_stamp_target_topic: %s", geo_msg_target_topic.c_str());
+    nodeHandle.getParam("poseStamped_topic", poseStamped_topic);
+    if (!poseStamped_topic.empty()){
+        if_geo_msg_target = true;
+        ROS_INFO("Loaded parameter poseStamped_topic: %s", poseStamped_topic.c_str());
     }else{
-        ROS_WARN("pose_stamp_target_topic is empty, odometry to geo transferring canceled.");
+        ROS_WARN("poseStamped_topic is empty, odometry to geo transferring canceled.");
     }
 
-    if (nodeHandle.getParam("nav_target_frame_id", target_frame_id)){
-        if (!target_frame_id.empty()) if_nav_force_change_frame = true;
-        ROS_WARN("Loaded parameter nav_target_frame_id: %s, make sure you want to do this.",
+    nodeHandle.getParam("target_frame_id", target_frame_id);
+    if (!target_frame_id.empty()){
+        if_nav_force_change_frame = true;
+        ROS_WARN("Loaded parameter target_frame_id: %s, make sure you want to do this.",
                  target_frame_id.c_str());
     }else{
-        ROS_INFO("No force converting of nav_frame_id, ready to start...");
+        ROS_INFO("No force converting of frame_id, ready to start...");
     }
 
     bool if_nav_solid = if_nav_msg_source && if_nav_msg_target;
+    bool if_geo_solid = if_geo_msg_target;
 
     // mode
     enum MODE{
-        FULL,
-        FULL_FRAME,
-        SOURCE_FRAME,
-        DEFAULT
+        ODOM_ONLY,
+        ODOM2POSE_ONLY,
+        ODOM_AND_POSE,
+        NO_MODULE
     };
+    MODE m_mode;
 
+    if (if_nav_solid && !if_geo_solid && if_nav_force_change_frame){
+        m_mode = ODOM_ONLY;
+        ROS_INFO("Published a new nav_msg::Odometry topic: %s", nav_msg_target_topic.c_str());
+        ROS_INFO("Frame of %s is: %s", nav_msg_target_topic.c_str(), target_frame_id.c_str());
+    }else{
+        if (!if_nav_solid && if_geo_solid && if_nav_force_change_frame){
+            m_mode = ODOM2POSE_ONLY;
+            ROS_INFO("Converted and published a new geometry_msg::PoseStamped topic: %s",
+                     poseStamped_topic.c_str());
+            ROS_INFO("Frame of %s is: %s", poseStamped_topic.c_str(), target_frame_id.c_str());
+        }else if(if_nav_solid && if_geo_solid && if_nav_force_change_frame){
+            m_mode = ODOM_AND_POSE;
+            ROS_INFO("Published a new nav::Odometry topic: %s", nav_msg_target_topic.c_str());
+            ROS_INFO("Frame of %s is %s", nav_msg_target_topic.c_str(), target_frame_id.c_str());
+            ROS_INFO("Converted and published a new geometry_msg::PoseStamped topic: %s",
+                     poseStamped_topic.c_str());
+            ROS_INFO("Frame of %s is %s", poseStamped_topic.c_str(), target_frame_id.c_str());
+        }
+        else m_mode = NO_MODULE;
+    }
+
+    ros::Subscriber odom_pose_sub = nodeHandle.subscribe<nav_msgs::Odometry>(
+            nav_msg_source_topic, 100, odom_pose_cb);
+    ros::Publisher new_odom_pub = nodeHandle.advertise<nav_msgs::Odometry>(
+            nav_msg_target_topic, 100);
+    ros::Publisher geo_pose_pub = nodeHandle.advertise<geometry_msgs::PoseStamped>(
+            poseStamped_topic, 100);
+
+    // start transferring
+    ros::Rate rate(100);
+    while (nodeHandle.ok()){
+        switch (m_mode) {
+            case ODOM_ONLY:
+                odom_pose.header.frame_id = target_frame_id;
+                new_odom_pub.publish(odom_pose);
+                break;
+            case ODOM2POSE_ONLY:
+                geo_pose.header.frame_id = target_frame_id;
+                geo_pose_pub.publish(geo_pose);
+                break;
+            case ODOM_AND_POSE:
+                odom_pose.header.frame_id = target_frame_id;
+                geo_pose.header.frame_id = target_frame_id;
+                new_odom_pub.publish(odom_pose);
+                geo_pose_pub.publish(geo_pose);
+                break;
+            case NO_MODULE:
+                ROS_WARN("Receiving no transferring, shutdown this node...");
+                ros::shutdown();
+                break;
+            default:
+                ROS_WARN("Receiving no transferring, shutdown this node...");
+                ros::shutdown();
+                break;
+        }
+
+        ros::spinOnce();
+        rate.sleep();
+    }
 }
