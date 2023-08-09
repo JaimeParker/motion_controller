@@ -1,0 +1,30 @@
+<launch>
+
+    <!-- For pose_transfer node -->
+    <param name="pose_stamp_source_topic" value="/mavros/vision_pose/pose"/>
+    <param name="pose_stamp_target_topic" value="/vision_pose"/>
+    <param name="pose_stamp_target_frame_id" value="world"/>
+
+    <node
+        pkg="px4_mavros_controller" type="pose_transfer" name="pose_transfer_test" output="screen" >
+    </node>
+
+    <!-- For odom_transfer node -->
+    <param name="odometry_source_topic" value="/t265/odom/sample"/>
+    <param name="odometry_target_topic" value="/camera_odom_planner"/>
+    <param name="poseStamped_topic" value=""/>
+    <param name="target_frame_id" value="world"/>
+
+    <node
+        pkg="px4_mavros_controller" type="odom_transfer" name="odom_transfer_test" output="screen" >
+    </node>
+
+    <param name="sensor_msg_source_topic" value="/d400/depth/image_rect_raw" />
+    <param name="sensor_msg_target_topic" value="/depth_planner" />
+    <param name="sensor_msg_target_frame_id" value="world" />
+
+    <node
+        pkg="px4_mavros_controller" type="depth_transfer" name="depth_transfer_test" output="screen" >
+    </node>
+
+</launch>
