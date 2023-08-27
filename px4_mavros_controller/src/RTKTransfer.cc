@@ -64,7 +64,7 @@ int main(int argc, char **argv){
     ros::Subscriber rtk_pose_sub = nodeHandle.subscribe<geometry_msgs::PoseStamped>(
             "/mavros/local_position/pose", 100, rtkPoseSubCB);
     ros::Publisher origin_trans_pub = nodeHandle.advertise<geometry_msgs::PoseStamped>(
-            "/drone_frame_pose", 100);
+            "/vision_pose", 100);
 
     while(true){
         if (!if_rtk_received){
