@@ -7,9 +7,6 @@
 #include <ros/ros.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <tf2/LinearMath/Quaternion.h>
-#include <tf2/LinearMath/Transform.h>
-#include <tf2/convert.h>
-#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <tf2_ros/buffer.h>
 #include <tf2_ros/transform_listener.h>
 #include <tf/tf.h>
@@ -66,6 +63,7 @@ int main(int argc, char **argv){
     ros::Publisher origin_trans_pub = nodeHandle.advertise<geometry_msgs::PoseStamped>(
             "/vision_pose", 100);
 
+    /* check if RTK received */
     while(true){
         if (!if_rtk_received){
             ROS_WARN("warning: no /mavros/local_position/pose data received.");
@@ -78,6 +76,7 @@ int main(int argc, char **argv){
         ros::Rate(1).sleep();
     }
 
+    /* get R and t */
     ROS_INFO("Resolving GPS data.");
     std::vector<geometry_msgs::PoseStamped> rtk_poses;
     bool pose_steady = false;
@@ -98,10 +97,10 @@ int main(int argc, char **argv){
     }
     ROS_INFO("Successfully linked up with GPS data.");
 
+    /* use transform */
     geometry_msgs::PoseStamped pose_before, pose_after;
     tf2_ros::Buffer buffer;
     tf2_ros::TransformListener listener(buffer);
-    tf2::Quaternion origin_q_inv = origin_q.inverse();
     while(ros::ok()){
         setOriginTrans(rtk_pose, pose_after);
         pose_after.header.frame_id = "world";
