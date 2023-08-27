@@ -1,7 +1,7 @@
 /**
  * @file PoseTransfer.cc
  * @brief Transfer a PoseStamped data to another topic or just change its frame_id, etc
- * Created by hazy parker on 23-7-17.
+ * Created by Zhaohong Liu on 23-7-17.
 */
 
 // include libs
@@ -10,11 +10,11 @@
 #include <geometry_msgs/PoseStamped.h>
 
 // global variables
-geometry_msgs::PoseStamped geo_pose;
+geometry_msgs::PoseStamped pose;
 
 // callback functions
 void pose_sub_cb(const geometry_msgs::PoseStamped::ConstPtr &msg){
-    geo_pose = *msg;
+    pose = *msg;
 }
 
 // main function, ros node
@@ -99,11 +99,11 @@ int main(int argc, char **argv){
     while (nodeHandle.ok()){
         switch (m_mode) {
             case FULL:
-                pose_pub.publish(geo_pose);
+                pose_pub.publish(pose);
                 break;
             case FULL_FRAME:
-                geo_pose.header.frame_id = geo_target_frame_id;
-                pose_pub.publish(geo_pose);
+                pose.header.frame_id = geo_target_frame_id;
+                pose_pub.publish(pose);
                 break;
             default:
                 ROS_WARN("Receiving no transferring, shutdown this node...");

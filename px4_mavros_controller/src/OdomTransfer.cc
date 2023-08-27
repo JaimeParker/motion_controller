@@ -1,7 +1,7 @@
 /**
  * @file OdomTransfer.cc
  * @brief Transfer a Odometry data to another topic or just change its frame_id, etc
- * Created by hazy parker on 23-7-17.
+ * Created by Zhaohong Liu on 23-7-17.
 */
 
 // include libs
@@ -12,19 +12,19 @@
 
 // global variables
 nav_msgs::Odometry odom_pose;
-geometry_msgs::PoseStamped geo_pose;
+geometry_msgs::PoseStamped pose;
 
 void odom_pose_cb(const nav_msgs::Odometry::ConstPtr &msg){
     odom_pose = *msg;
 
-    geo_pose.pose.position.x = odom_pose.pose.pose.position.x;
-    geo_pose.pose.position.y = odom_pose.pose.pose.position.y;
-    geo_pose.pose.position.z = odom_pose.pose.pose.position.z;
+    pose.pose.position.x = odom_pose.pose.pose.position.x;
+    pose.pose.position.y = odom_pose.pose.pose.position.y;
+    pose.pose.position.z = odom_pose.pose.pose.position.z;
 
-    geo_pose.pose.orientation.x = odom_pose.pose.pose.orientation.x;
-    geo_pose.pose.orientation.y = odom_pose.pose.pose.orientation.y;
-    geo_pose.pose.orientation.z = odom_pose.pose.pose.orientation.z;
-    geo_pose.pose.orientation.w = odom_pose.pose.pose.orientation.w;
+    pose.pose.orientation.x = odom_pose.pose.pose.orientation.x;
+    pose.pose.orientation.y = odom_pose.pose.pose.orientation.y;
+    pose.pose.orientation.z = odom_pose.pose.pose.orientation.z;
+    pose.pose.orientation.w = odom_pose.pose.pose.orientation.w;
 }
 
 int main(int argc, char **argv){
@@ -124,14 +124,14 @@ int main(int argc, char **argv){
                 new_odom_pub.publish(odom_pose);
                 break;
             case ODOM2POSE_ONLY:
-                geo_pose.header.frame_id = target_frame_id;
-                geo_pose_pub.publish(geo_pose);
+                pose.header.frame_id = target_frame_id;
+                geo_pose_pub.publish(pose);
                 break;
             case ODOM_AND_POSE:
                 odom_pose.header.frame_id = target_frame_id;
-                geo_pose.header.frame_id = target_frame_id;
+                pose.header.frame_id = target_frame_id;
                 new_odom_pub.publish(odom_pose);
-                geo_pose_pub.publish(geo_pose);
+                geo_pose_pub.publish(pose);
                 break;
             case NO_MODULE:
                 ROS_WARN("Receiving no transferring, shutdown this node...");

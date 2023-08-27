@@ -20,6 +20,7 @@ find_package(catkin REQUIRED COMPONENTS
         tf
         nav_msgs
         sensor_msgs
+        tf2
 )
 
 ## System dependencies are found with CMake's conventions
@@ -150,9 +151,6 @@ target_link_libraries(offb_node ${catkin_LIBRARIES})
 add_executable(T265FrameTransfer src/T265Vision2Mavros.cc)
 target_link_libraries(T265FrameTransfer ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
-add_executable(camera_odom_transfer src/CameraOdomTransfer.cc)
-target_link_libraries(camera_odom_transfer ${catkin_LIBRARIES})
-
 add_executable(pose_transfer src/PoseTransfer.cc)
 target_link_libraries(pose_transfer ${catkin_LIBRARIES})
 
@@ -161,6 +159,12 @@ target_link_libraries(odom_transfer ${catkin_LIBRARIES})
 
 add_executable(depth_transfer src/DepthImageTransfer.cc)
 target_link_libraries(depth_transfer ${catkin_LIBRARIES})
+
+add_executable(rtk_transfer src/RTKTransfer.cc)
+target_link_libraries(rtk_transfer ${catkin_LIBRARIES})
+
+add_executable(test_trans src/TestTransfer.cc)
+target_link_libraries(test_trans ${catkin_LIBRARIES})
 
 #add_executable(D435iPCL2Octomap src/D435iPCL2Octomap.cc)
 #target_link_libraries(D435iPCL2Octomap ${catkin_LIBRARIES})
