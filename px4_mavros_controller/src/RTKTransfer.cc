@@ -101,12 +101,18 @@ int main(int argc, char **argv){
     geometry_msgs::PoseStamped pose_before, pose_after;
     tf2_ros::Buffer buffer;
     tf2_ros::TransformListener listener(buffer);
+    tf::Quaternion q;
+    q.setValue(origin_q.x(), origin_q.y(), origin_q.z(), origin_q.w());
+    double yaw = tf::getYaw(q);
+
+    nodeHandle.setParam("origin_x", origin_x);
+    nodeHandle.setParam("origin_y", origin_y);
+    nodeHandle.setParam("origin_z", origin_z);
+    nodeHandle.setParam("origin_yaw", yaw);
+
     while(ros::ok()){
         setOriginTrans(rtk_pose, pose_after);
         pose_after.header.frame_id = "world";
-        tf::Quaternion q;
-        q.setValue(origin_q.x(), origin_q.y(), origin_q.z(), origin_q.w());
-        double yaw = tf::getYaw(q);
         yaw = -yaw;
         q.setRPY(0, 0, yaw);
         q.normalize();

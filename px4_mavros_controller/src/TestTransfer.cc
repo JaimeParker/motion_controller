@@ -1,5 +1,5 @@
 //
-// Created by hazyparker on 23-8-27.
+// Created by hazy parker on 23-8-27.
 //
 
 #include <ros/ros.h>
@@ -10,7 +10,7 @@ int main(int argc, char **argv){
     ros::NodeHandle nh;
 
     ros::Publisher publisher = nh.advertise<geometry_msgs::PoseStamped>(
-            "/test_pose", 100);
+            "/mavros/local_position/pose", 100);
 
     geometry_msgs::PoseStamped pose;
     pose.pose.position.x = 1.0;
