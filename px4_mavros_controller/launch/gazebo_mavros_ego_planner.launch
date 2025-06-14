@@ -19,7 +19,7 @@
         pkg="px4_mavros_controller" type="odom_transfer" name="odom_transfer_test" output="screen" >
     </node>
 
-    <param name="sensor_msg_source_topic" value="/iris/camera/depth/image_raw" />
+    <param name="sensor_msg_source_topic" value="/camera/depth/image_raw" />
     <param name="sensor_msg_target_topic" value="/depth_planner" />
     <param name="sensor_msg_target_frame_id" value="world" />
 
