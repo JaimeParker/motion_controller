@@ -9,13 +9,17 @@
 #include <ros/ros.h>
 #include <nav_msgs/Odometry.h>
 #include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/Point.h>
 
 // global variables
 nav_msgs::Odometry odom_pose;
 geometry_msgs::PoseStamped pose;
+geometry_msgs::Point origin_point;
 
 void odom_pose_cb(const nav_msgs::Odometry::ConstPtr &msg){
     odom_pose = *msg;
+
+    odom_pose.pose.pose.position.z -= origin_point.z;
 
     pose.pose.position.x = odom_pose.pose.pose.position.x;
     pose.pose.position.y = odom_pose.pose.pose.position.y;
@@ -27,10 +31,19 @@ void odom_pose_cb(const nav_msgs::Odometry::ConstPtr &msg){
     pose.pose.orientation.w = odom_pose.pose.pose.orientation.w;
 }
 
+void origin_point_sub_cb(const geometry_msgs::Point::ConstPtr &msg){
+    origin_point = *msg;
+}
+
 int main(int argc, char **argv){
     // ros init
     ros::init(argc, argv, "odom_transfer");
     ros::NodeHandle nodeHandle;
+
+    // init origin point
+    origin_point.x = 0.0;
+    origin_point.y = 0.0;
+    origin_point.z = 0.0;
 
     // some flags
     bool if_nav_msg_source = false;
@@ -114,6 +127,8 @@ int main(int argc, char **argv){
             nav_msg_target_topic, 100);
     ros::Publisher geo_pose_pub = nodeHandle.advertise<geometry_msgs::PoseStamped>(
             poseStamped_topic, 100);
+    ros::Subscriber origin_point_sub = nodeHandle.subscribe<geometry_msgs::Point>(
+        "/origin_pos", 10, origin_point_sub_cb);
 
     // start transferring
     ros::Rate rate(100);

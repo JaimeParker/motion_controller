@@ -8,13 +8,22 @@
 #include <cstring>
 #include <ros/ros.h>
 #include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/Point.h>
 
 // global variables
 geometry_msgs::PoseStamped pose;
+geometry_msgs::Point origin_point;
 
 // callback functions
 void pose_sub_cb(const geometry_msgs::PoseStamped::ConstPtr &msg){
     pose = *msg;
+
+    // only transfer z coordinate
+    pose.pose.position.z -= origin_point.z;
+}
+
+void origin_point_sub_cb(const geometry_msgs::Point::ConstPtr &msg){
+    origin_point = *msg;
 }
 
 // main function, ros node
@@ -22,6 +31,11 @@ int main(int argc, char **argv){
     // ros init
     ros::init(argc, argv, "pose_transfer");
     ros::NodeHandle nodeHandle;
+
+    // init origin point
+    origin_point.x = 0.0;
+    origin_point.y = 0.0;
+    origin_point.z = 0.0;
 
     // some flags
     bool if_geo_msg_source = false;
@@ -77,6 +91,8 @@ int main(int argc, char **argv){
             geo_msg_source_topic, 100, pose_sub_cb);
     ros::Publisher pose_pub = nodeHandle.advertise<geometry_msgs::PoseStamped>(
             geo_msg_target_topic, 100);
+    ros::Subscriber origin_point_sub = nodeHandle.subscribe<geometry_msgs::Point>(
+            "/origin_pos", 10, origin_point_sub_cb);
 
     switch (m_mode) {
         case FULL:
